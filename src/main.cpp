@@ -44,8 +44,8 @@ const char *WEEKDAY_CN[] = {"周日", "周一", "周二", "周三", "周四", "�
 const char *WEEKDAY_EN[] = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
 const char *MONTH_CN[] = {"一月", "二月", "三月", "四月", "五月", "六月", "七月", "八月", "九月", "十月", "十一月", "十二月"};
 const char *MONTH_EN[] = {"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
-const uint16_t SMARTCONFIG_QR_CODE_WIDTH = 120;
-const uint16_t SMARTCONFIG_QR_CODE_HEIGHT = 120;
+const uint16_t SMARTCONFIG_IMAGE_WIDTH = 64;
+const uint16_t SMARTCONFIG_IMAGE_HEIGHT = 64;
 GeoInfo gi;
 int16_t DISPLAY_WIDTH;
 int16_t DISPLAY_HEIGHT;
@@ -387,7 +387,7 @@ void ShowStartUpImg()
   {
     display.fillScreen(GxEPD_WHITE);
   } while (display.nextPage());
-  drawBitmapFromSpiffs_Buffered("pic.bmp", 0, 0, false, true, false);
+  drawBitmapFromSpiffs_Buffered("output.bmp", 0, 0, false, true, false);
   delay(5000);
   display.fillScreen(GxEPD_WHITE);
 }
@@ -397,11 +397,11 @@ void ShowWiFiSmartConfig()
   //display.clearScreen(GxEPD_WHITE);
   display.fillScreen(GxEPD_WHITE);
 
-  const uint16_t x = (DISPLAY_WIDTH - SMARTCONFIG_QR_CODE_WIDTH) / 2;
-  const uint16_t y = (DISPLAY_HEIGHT - SMARTCONFIG_QR_CODE_HEIGHT) / 2;
+  const uint16_t x = (DISPLAY_WIDTH - SMARTCONFIG_IMAGE_WIDTH) / 2;
+  const uint16_t y = (DISPLAY_HEIGHT - SMARTCONFIG_IMAGE_HEIGHT) / 2;
 
   u8g2Fonts.setFont(u8g2_mfyuehei_18_gb2312);
-  uint16_t tipsY = y + SMARTCONFIG_QR_CODE_HEIGHT + 40;
+  uint16_t tipsY = y + SMARTCONFIG_IMAGE_HEIGHT + 40;
 
   display.firstPage();
   do
@@ -409,7 +409,7 @@ void ShowWiFiSmartConfig()
     //DrawMultiLineString("请用微信扫描二维码或使用 ESPTouch 配置网络。", 90, tipsY, 300, 30);
     DrawMultiLineString("请使用 ESPTouch 配置网络。", 90, tipsY, 300, 30);
   } while (display.nextPage());
-  //drawBitmapFromSpiffs_Buffered("smartconfig.bmp", x, y, false, true, false);
+  drawBitmapFromSpiffs_Buffered("64/100.bmp", x, y, false, true, false);
 }
 
 enum PageContent : u8_t

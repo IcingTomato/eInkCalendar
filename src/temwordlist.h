@@ -10,7 +10,7 @@ const char* TEMWord[] = {
     "celebrate v.庆祝；歌颂 Odysseus's heroic exploits are celebrated in The Odyssey.<<奥德赛>>史诗中歌颂了奥德修斯的丰功伟绩",
     "subject adj.隶属的，从属的，受支配的；有……倾向的，易受，常有vt.使隶属，使服从；使遭受，使经历【用】subject to，表示“易遭……的”之意",
     "absorb vt.吸收（水、热、光等）；吸引（注意），使专心，使全神贯注【用】be ~ed in，专心于某事【派】absorption n.吸收；专注；~ing adj.引人入胜的",
-    "interchange v.交换，互换；交替发生 n.交换，互换；立体交叉道【例】Interchange labor and repose during the work.工作中应该劳逸结合",
+    "interchange v.交换，互换；交替发生n.交换，互换；立体交叉道【例】Interchange labor and repose during the work.工作中应该劳逸结合",
     "discretion n.谨慎；自由裁夺；酌处权【用】at the discretion of的意思是“由……斟酌决定”，但在句子中应看上下文来翻译或理解",
     "charm n.魅力，魔力 v.迷住，使……陶醉【派】charming（adj.迷人的，有魅力的；令人高兴的）",
     "smuggle v.走私，偷运【例】The man tried to smuggle something valuable through the customs.这名男子想从海关走私一些贵重物品",
@@ -112,7 +112,19 @@ const char* TEMWord[] = {
     "rid vt.使摆脱，使去掉，使获自由【用】get rid of比较常见，意思是“摆脱，解脱；赶走，清除”",
     "frequency n.次数，频率；频繁，屡次；周率",
     "enchant vt.用魔法迷惑，使着魔；使入迷，使陶醉 Linda was plainly enchanted by the view.琳达显然被这种景色陶醉了【用】多指由于喜悦或魔法而着迷",
-    "comment n./v.评价，评论【派】commentary〔n.（对书籍等的）评语，评注，评论；实况报道〕；commentator（n.注释者，解说者；实况转播评论员，新闻广播员）"
+    "comment n./v.评价，评论【派】commentary〔n.（对书籍等的）评语，评注，评论；实况报道〕；commentator（n.注释者，解说者；实况转播评论员，新闻广播员）",
+    "outstanding adj.杰出的，优秀的；未付款的；（问题）未解决的",
+    "release vt.释放，免除；放出，发射；发行，发表，发售n.释放，免除；放出，发射 The prisoner was ~d from jail when his sentence was up.囚犯刑满释放",
+    "wretched adj.可怜的，悲惨的；恶劣的，令人讨厌的【例】wretched news不幸的消息",
+    "stifle v.使窒息，窒闷；熄灭，扑灭；抑制，遏止【例】The smoke in the room stifled the children.房间里的烟使得孩子们窒息",
+    "solve v.解决，解答，解释【辨】solve指解决具体问题，如：solve the question；resolve指解决抽象的问题或困难，如：resolve the difficulty",
+    "reckless adj.轻率的，鲁莽的，不计后果的 It is a ~ and irresponsible attack, bordering on the libelous.这是轻率而不负责任的抨击，和诽谤差不多",
+    "hoarse adj.（声音）沙哑的 The voice of the cheerleaders sometimes becomes ~ because they shout and yell.拉拉队员们的声音有时会因为叫喊变得沙哑",
+    "duration n.持续（时间）【用】固定搭配for the duration意思是“在整段时间内”",
+    "moan n.呻吟（声），呜咽（声）；抱怨v.呻吟；抱怨【例】We moaned and complained about how unfair it was.我们抱怨这是多么的不公平",
+    "responsible adj.责任的，应负责的；可靠的，可信赖的；（指职位）责任重大的【用】be ~ for 对……负责【派】responsibility（n.责任，负责；职责，任务）",
+    "yearn vi.想念，思慕，渴望【用】yearn为不及物动词，常与for搭配，表示“渴望……”",
+    
 };
 #define TEMWordCount (sizeof(TEMWord)/sizeof(char *)) 
 #endif
