@@ -6,18 +6,8 @@
 #include <U8g2_for_Adafruit_GFX.h>
 
 #if defined(ESP32)
-//GxEPD2_BW<GxEPD2_583, GxEPD2_583::HEIGHT> display(GxEPD2_583(/*CS=5*/ 15, /*DC=*/ 27, /*RST=*/ 26, /*BUSY=*/ 25));
 GxEPD2_BW<GxEPD2_583_T8, GxEPD2_583_T8::HEIGHT> display(GxEPD2_583_T8(/*CS=5*/ 15, /*DC=*/27, /*RST=*/26, /*BUSY=*/25));
-//GxEPD2_BW<GxEPD2_750, GxEPD2_750::HEIGHT> display(GxEPD2_750(/*CS=5*/ SS, /*DC=*/ 17, /*RST=*/ 16, /*BUSY=*/ 4));
-//GxEPD2_BW<GxEPD2_750_T7, GxEPD2_750_T7::HEIGHT> display(GxEPD2_750_T7(/*CS=5*/ SS, /*DC=*/ 17, /*RST=*/ 16, /*BUSY=*/ 4)); // GDEW075T7 800x480
-// 3-color e-papers
-//GxEPD2_3C<GxEPD2_583c, GxEPD2_583c::HEIGHT> display(GxEPD2_583c(/*CS=5*/ SS, /*DC=*/ 17, /*RST=*/ 16, /*BUSY=*/ 4));
-//GxEPD2_3C<GxEPD2_750c, GxEPD2_750c::HEIGHT> display(GxEPD2_750c(/*CS=5*/ SS, /*DC=*/ 17, /*RST=*/ 16, /*BUSY=*/ 4));
-//GxEPD2_3C<GxEPD2_750c_Z08, GxEPD2_750c_Z08::HEIGHT> display(GxEPD2_750c_Z08(/*CS=5*/ SS, /*DC=*/ 17, /*RST=*/ 16, /*BUSY=*/ 4)); // GDEW075Z08 800x480
-//GxEPD2_3C<GxEPD2_750c_Z90, GxEPD2_750c_Z90::HEIGHT / 2> display(GxEPD2_750c_Z90(/*CS=5*/ SS, /*DC=*/ 17, /*RST=*/ 16, /*BUSY=*/ 4)); // GDEH075Z90 880x528
-// 7-color e-paper
-//GxEPD2_3C < GxEPD2_565c, GxEPD2_565c::HEIGHT / 2 > display(GxEPD2_565c(/*CS=5*/ SS, /*DC=*/ 17, /*RST=*/ 16, /*BUSY=*/ 4)); // Waveshare 5.65" 7-color (3C graphics)
-//GxEPD2_7C < GxEPD2_565c, GxEPD2_565c::HEIGHT / 2 > display(GxEPD2_565c(/*CS=5*/ SS, /*DC=*/ 17, /*RST=*/ 16, /*BUSY=*/ 4)); // Waveshare 5.65" 7-color
+//GxEPD2_3C<GxEPD2_750c, GxEPD2_750c::HEIGHT> display(GxEPD2_750c(/*CS=5*/ 15, /*DC=*/ 27, /*RST=*/ 26, /*BUSY=*/ 25));
 #endif
 
 #include <ArduinoJson.h>
@@ -387,6 +377,20 @@ void DrawMultiLineString(string content, uint16_t x, uint16_t y, uint16_t conten
     }
   }
 }
+void ShowStartUpImg()
+{
+  //display.clearScreen(GxEPD_WHITE);
+  display.fillScreen(GxEPD_WHITE);
+
+  display.firstPage();
+  do
+  {
+    display.fillScreen(GxEPD_WHITE);
+  } while (display.nextPage());
+  drawBitmapFromSpiffs_Buffered("pic.bmp", 0, 0, false, true, false);
+  delay(5000);
+  display.fillScreen(GxEPD_WHITE);
+}
 
 void ShowWiFiSmartConfig()
 {
@@ -402,9 +406,10 @@ void ShowWiFiSmartConfig()
   display.firstPage();
   do
   {
-    DrawMultiLineString("请用微信扫描二维码或使用 ESPTouch 配置网络。", 90, tipsY, 300, 30);
+    //DrawMultiLineString("请用微信扫描二维码或使用 ESPTouch 配置网络。", 90, tipsY, 300, 30);
+    DrawMultiLineString("请使用 ESPTouch 配置网络。", 90, tipsY, 300, 30);
   } while (display.nextPage());
-  drawBitmapFromSpiffs_Buffered("smartconfig.bmp", x, y, false, true, false);
+  //drawBitmapFromSpiffs_Buffered("smartconfig.bmp", x, y, false, true, false);
 }
 
 enum PageContent : u8_t
@@ -419,7 +424,8 @@ void ShowPageHeader()
   u8g2Fonts.drawUTF8(48, 64, DateTime.format(DateFormatter::DATE_ONLY).c_str());
 
   int16_t cityNameWidth = u8g2Fonts.getUTF8Width(gi.name.c_str());
-  u8g2Fonts.drawUTF8((DISPLAY_WIDTH - cityNameWidth - 48), 64, gi.name.c_str());
+  //u8g2Fonts.drawUTF8((DISPLAY_WIDTH - cityNameWidth - 48), 64, gi.name.c_str());
+  u8g2Fonts.drawUTF8((DISPLAY_WIDTH - cityNameWidth - 80), 64, gi.name.c_str());
 
   u8g2Fonts.setFont(u8g2_mfyuehei_14_gb2312);
   u8g2Fonts.drawUTF8(48, 64 + 24, WEEKDAY_EN[DateTime.getParts().getWeekDay()]);
@@ -445,7 +451,7 @@ void ShowTEMWord()
   Serial.printf("pick %u: %s\n", r, word);
   u8g2Fonts.setFont(u8g2_mfyuehei_18_gb2312);
   //DrawMultiLineString(string(word), 80, 420, 300, 36);
-  DrawMultiLineString(string(word), 50, 410, 355, 36);
+  DrawMultiLineString(string(word), 50, 410, 340, 36);
 }
 
 void ShowWeatherFoot()
@@ -458,8 +464,10 @@ void ShowWeatherFoot()
   foot.concat("°C");
 
   u8g2Fonts.setFont(u8g2_mfyuehei_14_gb2312);
-  u8g2Fonts.drawUTF8(88, DISPLAY_HEIGHT - 24, foot.c_str()); //显示在底部
-  //u8g2Fonts.drawUTF8(88, DISPLAY_HEIGHT - 500, foot.c_str()); //显示在日期上面
+  /*显示在底部*/
+  u8g2Fonts.drawUTF8(88, DISPLAY_HEIGHT - 24, foot.c_str()); 
+  /*显示在日期上面*/
+  //u8g2Fonts.drawUTF8(88, DISPLAY_HEIGHT - 500, foot.c_str()); 
 }
 
 void ShowWeatherContent()
@@ -579,6 +587,7 @@ void ShowPage(PageContent pageContent)
     break;
   case PageContent::WEATHER:
     drawBitmapFromSpiffs_Buffered(iconFileSmall.c_str(), 48, DISPLAY_HEIGHT - 48, false, true, false);
+    //drawBitmapFromSpiffs_Buffered(iconFileSmall.c_str(), 48, DISPLAY_HEIGHT - 500, false, true, false);
     drawBitmapFromSpiffs_Buffered(iconFileBig.c_str(), 88, 140, false, true, false);
     break;
   }
@@ -622,6 +631,8 @@ void setup()
 
   SmartConfigManager scm;
   scm.initWiFi(ShowWiFiSmartConfig);
+
+  ShowStartUpImg();
 
   qwAPI.Config(QWEATHER_API_KEY);
 
