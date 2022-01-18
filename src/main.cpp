@@ -6,8 +6,10 @@
 #include <U8g2_for_Adafruit_GFX.h>
 
 #if defined(ESP32)
-GxEPD2_BW<GxEPD2_583_T8, GxEPD2_583_T8::HEIGHT> display(GxEPD2_583_T8(/*CS=5*/ 15, /*DC=*/27, /*RST=*/26, /*BUSY=*/25));
+//GxEPD2_BW<GxEPD2_583_T8, GxEPD2_583_T8::HEIGHT> display(GxEPD2_583_T8(/*CS=5*/ 15, /*DC=*/27, /*RST=*/26, /*BUSY=*/25));
 //GxEPD2_3C<GxEPD2_750c, GxEPD2_750c::HEIGHT> display(GxEPD2_750c(/*CS=5*/ 15, /*DC=*/ 27, /*RST=*/ 26, /*BUSY=*/ 25));
+GxEPD2_BW<GxEPD2_750_T7, GxEPD2_750_T7::HEIGHT> display(GxEPD2_750_T7(/*CS=5*/ 15, /*DC=*/ 27, /*RST=*/ 26, /*BUSY=*/ 25)); // GDEW075T7 800x480
+//GxEPD2_3C<GxEPD2_750c_Z90, GxEPD2_750c_Z90::HEIGHT / 2> display(GxEPD2_750c_Z90(/*CS=5*/ 15, /*DC=*/27, /*RST=*/26, /*BUSY=*/25)); // 
 #endif
 
 #include <ArduinoJson.h>
@@ -33,7 +35,8 @@ GxEPD2_BW<GxEPD2_583_T8, GxEPD2_583_T8::HEIGHT> display(GxEPD2_583_T8(/*CS=5*/ 1
 #include "u8g2_mfyuanhei_16_gb2312.h"
 
 U8G2_FOR_ADAFRUIT_GFX u8g2Fonts;
-#include "temwordlist.h"
+//#include "temwordlist.h"
+//#include "toxicsoul.h"
 #include <ESPDateTime.h>
 //#include "IPAPI.h"  //IPAPI 测不准
 #include "MyIP.h"
@@ -44,6 +47,8 @@ const char *WEEKDAY_CN[] = {"周日", "周一", "周二", "周三", "周四", "�
 const char *WEEKDAY_EN[] = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
 const char *MONTH_CN[] = {"一月", "二月", "三月", "四月", "五月", "六月", "七月", "八月", "九月", "十月", "十一月", "十二月"};
 const char *MONTH_EN[] = {"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
+// const uint16_t SMARTCONFIG_IMAGE_WIDTH = 120;
+// const uint16_t SMARTCONFIG_IMAGE_HEIGHT = 120;
 const uint16_t SMARTCONFIG_IMAGE_WIDTH = 64;
 const uint16_t SMARTCONFIG_IMAGE_HEIGHT = 64;
 GeoInfo gi;
@@ -72,7 +77,15 @@ RTC_NOINIT_ATTR u8_t LASTPAGE = -1;
 
 #define uS_TO_S_FACTOR 1000000 /* Conversion factor for micro seconds to seconds */
 //#define TIME_TO_SLEEP 60 * 60 * 3  /* 改变这里的值来调整你需要的休眠时间，这里最终的值为秒。 例如 60*60*3 最终会休眠3个小时 */ 
-#define TIME_TO_SLEEP 60 * 5
+#define TIME_TO_SLEEP 60 * 10
+
+//一言
+typedef struct {
+  char hitokoto[1024];//一言正文。编码方式 unicode。使用 utf-8。
+  char from[60];//一言的出处
+} HitokotoData_t;
+HitokotoData_t Hitokoto;
+//DynamicJsonBuffer jsonBuffer;
 
 void print_wakeup_reason()
 {
@@ -388,7 +401,7 @@ void ShowStartUpImg()
     display.fillScreen(GxEPD_WHITE);
   } while (display.nextPage());
   drawBitmapFromSpiffs_Buffered("output.bmp", 0, 0, false, true, false);
-  delay(5000);
+  delay(2000);
   display.fillScreen(GxEPD_WHITE);
 }
 
@@ -407,8 +420,10 @@ void ShowWiFiSmartConfig()
   do
   {
     //DrawMultiLineString("请用微信扫描二维码或使用 ESPTouch 配置网络。", 90, tipsY, 300, 30);
-    DrawMultiLineString("请使用 ESPTouch 配置网络。", 90, tipsY, 300, 30);
+    //DrawMultiLineString("请用微信扫描二维码或使用 ESPTouch 配置网络", 90, tipsY, 300, 30);
+    DrawMultiLineString("请使用 ESPTouch 配置网络", 90, tipsY, 300, 30);
   } while (display.nextPage());
+  //drawBitmapFromSpiffs_Buffered("smartconfig.bmp", x, y, false, true, false);
   drawBitmapFromSpiffs_Buffered("64/100.bmp", x, y, false, true, false);
 }
 
@@ -444,14 +459,65 @@ void ShowCurrentDate()
   u8g2Fonts.drawUTF8((DISPLAY_WIDTH - monthWidth) / 2, 340, MONTH_EN[m]);
 }
 
-void ShowTEMWord()
+// void ShowTEMWord()
+// {
+//   u16_t r = random(TEMWordCount);
+//   const char *word = TEMWord[r];
+//   Serial.printf("pick %u: %s\n", r, word);
+//   u8g2Fonts.setFont(u8g2_mfyuehei_18_gb2312);
+//   //DrawMultiLineString(string(word), 80, 420, 300, 36);
+//   DrawMultiLineString(string(word), 50, 410, 340, 36);
+// }
+
+// void ShowToxicSoul()
+// {
+//   u16_t r = random(ToxicSoulCount);
+//   const char *soul = ToxicSoul[r];
+//   Serial.printf("pick %u: %s\n", r, soul);
+//   u8g2Fonts.setFont(u8g2_mfyuehei_18_gb2312);
+//   DrawMultiLineString(string(soul), 80, 420, 300, 36);
+// }
+
+void ShowHitokoto()
 {
-  u16_t r = random(TEMWordCount);
-  const char *word = TEMWord[r];
-  Serial.printf("pick %u: %s\n", r, word);
+  HTTPClient http;
+  http.begin("https://v1.hitokoto.cn/");//Specify the URL
+  int httpCode = http.GET();            //Make the request
+  if (httpCode > 0) { //Check for the returning code
+
+    String payload = http.getString();
+    Serial.println(httpCode);
+    Serial.println(payload);
+
+    DynamicJsonDocument doc(1024);
+    DeserializationError error = deserializeJson(doc, payload);
+
+    if (error) {
+      Serial.println("JSON parsing failed!");
+    } else {
+      if (strlen(doc["hitokoto"]) > sizeof(Hitokoto.hitokoto)) {
+        http.end();
+        return;
+      }
+      strcpy(Hitokoto.hitokoto, doc["hitokoto"]);
+      strcpy(Hitokoto.from, doc["from"]);
+    }
+  }
+  else {
+    Serial.println("Error on HTTP request");
+  }
+  http.end(); //Free the resources
+  
+  Serial.printf("%s from: %s\n", Hitokoto.hitokoto, Hitokoto.from); 
+  String headHitokoto = Hitokoto.hitokoto;
+  String tailHitokoto = " from: ";
+  tailHitokoto.concat(Hitokoto.from);
+  headHitokoto.concat(tailHitokoto);
+  Serial.println(headHitokoto);
   u8g2Fonts.setFont(u8g2_mfyuehei_18_gb2312);
-  //DrawMultiLineString(string(word), 80, 420, 300, 36);
-  DrawMultiLineString(string(word), 50, 410, 340, 36);
+  char allHitokoto[512];
+  headHitokoto.toCharArray(allHitokoto, 512);
+  DrawMultiLineString(string(allHitokoto), 80, 420, 300, 36);
 }
 
 void ShowWeatherFoot()
@@ -570,7 +636,9 @@ void ShowPage(PageContent pageContent)
       break;
     }
 
-    ShowTEMWord();
+    //ShowTEMWord();
+    //ShowToxicSoul(); 
+    ShowHitokoto();
     ShowWeatherFoot();
 
   } while (display.nextPage());
@@ -632,7 +700,8 @@ void setup()
   SmartConfigManager scm;
   scm.initWiFi(ShowWiFiSmartConfig);
 
-  ShowStartUpImg();
+  //ShowStartUpImg();
+  //开机动画
 
   qwAPI.Config(QWEATHER_API_KEY);
 
