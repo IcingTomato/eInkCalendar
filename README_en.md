@@ -60,10 +60,13 @@ According to the [E-Paper ESP32 Driver Board schemetic](https://www.waveshare.ne
     - [ArduinoJSON](https://arduinojson.org/)
 
 - **Services**：
-    - TEM4 Words List: 新东方-专四词根+联想记忆法(乱序版)
+    - ~~TEM4 Words List: 新东方-专四词根+联想记忆法(乱序版)~~
     - [IP Address Search](https://www.myip.la/): codes in [src/MyIP.h](src/MyIP.h) & [src/MyIP.cpp](src/MyIP.cpp)
     - Fonts: from [MakeFont-造字工房](https://www.makefont.com/) non-commercial fonts. Please read the [License](https://www.makefont.com/authorization.html) before you using.
     - Weather API: [Qweather-和风天气开发平台](https://dev.qweather.com/). Please register an account and apply a KEY to replace the `*` in [src/config.h](src/config.h). Codes in  [src/QWeather.h](src/QWeather.h) & [src/QWeather.cpp](src/QWeather.cpp)
+    - [Todoist ACCESS TOKEN](https://developer.todoist.com/appconsole.html)
+
+    ![](./docs/images/access_token.png)
 ```cpp
 const String QWEATHER_API_KEY = "********************";
 const String TODOIST_ACCESS_TOKEN = "************************";

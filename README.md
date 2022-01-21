@@ -62,7 +62,10 @@
 - **相关服务**：
     - ~~专四单词：用的新东方-专四词根+联想记忆法(乱序版)~~
     - [一言API](https://v1.hitokoto.cn/)
-    - [Todoist](https://www.todoist.com) 建议显示4个待办在【今天】里面就好了（我绝对不会说是因为buffer设置太大会硬复位导致问题的）
+    - [Todoist](https://www.todoist.com) 建议显示4个待办在【今天】里面就好了（我绝对不会说是因为buffer设置太大会硬复位导致问题的）[ACCESS TOKEN 获取](https://developer.todoist.com/appconsole.html)
+
+    ![](./docs/images/access_token.png)
+
     - [IP地址查询](https://www.myip.la/)：用来通过当前设备的IP地址查询得知当前位置。具体可见 [src/MyIP.h](src/MyIP.h) 和 [src/MyIP.cpp](src/MyIP.cpp)
     - 字体：项目中的字体使用了[造字工房](https://www.makefont.com/)的部分非商用字体来生成。如您要使用，请确保在其[授权范围](https://www.makefont.com/authorization.html)内使用。
     - 天气服务：这里用了[和风天气开发平台](https://dev.qweather.com/)的服务。所以需要您前往注册账号并获取到自己的一个应用程序Key来替换[src/config.h](src/config.h)中的占位符。具体相关代码可以参见 [src/QWeather.h](src/QWeather.h) 和 [src/QWeather.cpp](src/QWeather.cpp)
