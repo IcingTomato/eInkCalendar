@@ -573,14 +573,14 @@ void ShowTodoist()
       return;
     }
     u8g2Fonts.setFont(u8g2_mfyuehei_14_gb2312);
-    u8g2Fonts.drawUTF8(80, 540, "今天的任务：");
+    u8g2Fonts.drawUTF8(80, 540, "**待办事项**");
     int sizeY = 570;
     for (JsonObject item : doc.as<JsonArray>()) 
     {
       const char* content = item["content"]; 
       Serial.println(content);
       u8g2Fonts.setFont(u8g2_mfyuehei_12_gb2312);
-      String headerTodoist = "--> ";
+      String headerTodoist = "@_@ ";
       headerTodoist.concat(content);
       char allTodoist[2048];
       headerTodoist.toCharArray(allTodoist, 2048);
