@@ -105,4 +105,13 @@ I used a 7.5 inches eInk display.
 
 ### Thanks
 
-- [AilansKudoShinichi](https://github.com/AilansKudoShinichi) PCB设计
+- [AilansKudoShinichi](https://github.com/AilansKudoShinichi) PCB Design
+
+### Update
+
+| Time | Features |
+| ---- | ---- |
+| 2021.05.29 | First updated |
+| 2022.01.20 | Add Hitokoto API |
+| 2022.01.21 | Add Todoist API |
+| 2022.01.22 | Add Chinese Lunar |

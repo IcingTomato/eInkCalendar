@@ -390,20 +390,21 @@ void DrawMultiLineString(string content, uint16_t x, uint16_t y, uint16_t conten
     }
   }
 }
-void ShowStartUpImg()
-{
-  //display.clearScreen(GxEPD_WHITE);
-  display.fillScreen(GxEPD_WHITE);
 
-  display.firstPage();
-  do
-  {
-    display.fillScreen(GxEPD_WHITE);
-  } while (display.nextPage());
-  drawBitmapFromSpiffs_Buffered("output.bmp", 0, 0, false, true, false);
-  delay(2000);
-  display.fillScreen(GxEPD_WHITE);
-}
+// void ShowStartUpImg()
+// {
+//   //display.clearScreen(GxEPD_WHITE);
+//   display.fillScreen(GxEPD_WHITE);
+
+//   display.firstPage();
+//   do
+//   {
+//     display.fillScreen(GxEPD_WHITE);
+//   } while (display.nextPage());
+//   drawBitmapFromSpiffs_Buffered("output.bmp", 0, 0, false, true, false);
+//   delay(2000);
+//   display.fillScreen(GxEPD_WHITE);
+// }
 
 void ShowWiFiSmartConfig()
 {
@@ -433,6 +434,41 @@ enum PageContent : u8_t
   WEATHER = 1
 };
 
+void ShowLunar()
+{
+  HTTPClient http;
+  http.begin("https://api.muxiaoguo.cn/api/yinlongli");//Specify the URL
+  int httpCode = http.GET();            //Make the request
+  if (httpCode > 0) 
+  { //Check for the returning code
+    String payload = http.getString();
+    //Serial.println(httpCode);
+    Serial.println(payload);
+
+    DynamicJsonDocument doc(1024);
+    DeserializationError error = deserializeJson(doc, payload);
+
+    if (error) {
+      Serial.print("deserializeJson() failed: ");
+      Serial.println(error.c_str());
+      return;
+    }
+
+    const char* code = doc["code"]; // "200"
+    const char* msg = doc["msg"]; // "success"
+
+    JsonObject data = doc["data"];
+    const char* data_lunar = data["lunar"]; // "辛丑年腊月二十"
+    const char* data_solar_terms = data["solar_terms"]; // "大寒后"
+    u8g2Fonts.setFont(u8g2_mfyuehei_12_gb2312);
+    String LunarDate = data_lunar;
+    String SolarTerms = data_solar_terms;
+    String lunarDate = LunarDate + " " + SolarTerms;
+    int16_t lunarDateWidth = u8g2Fonts.getUTF8Width(lunarDate.c_str());
+    u8g2Fonts.drawUTF8((DISPLAY_WIDTH - lunarDateWidth - 80), 64 + 24, lunarDate.c_str());
+  }
+}
+
 void ShowPageHeader()
 {
   u8g2Fonts.setFont(u8g2_mfyuanhei_16_gb2312);
@@ -445,6 +481,7 @@ void ShowPageHeader()
   u8g2Fonts.setFont(u8g2_mfyuehei_14_gb2312);
   u8g2Fonts.drawUTF8(48, 64 + 24, WEEKDAY_EN[DateTime.getParts().getWeekDay()]);
 }
+
 void ShowCurrentDate()
 {
   String dateInCenter = String(DateTime.getParts().getMonthDay());
@@ -657,6 +694,7 @@ void ShowPage(PageContent pageContent)
      * 
      */
     ShowPageHeader();
+    ShowLunar();
 
     switch (pageContent)
     {
