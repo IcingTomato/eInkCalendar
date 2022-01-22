@@ -15,7 +15,7 @@ GxEPD2_BW<GxEPD2_750_T7, GxEPD2_750_T7::HEIGHT> display(GxEPD2_750_T7(/*CS=5*/ 1
 #include <ArduinoJson.h>
 #include "config.h"
 #include "SmartConfigManager.h"
-#include "MyIP.h"
+//#include "MyIP.h"
 #include "QWeather.h"
 #include "esp_bt.h"
 #include "esp_wifi.h"
@@ -430,8 +430,8 @@ void ShowWiFiSmartConfig()
 
 enum PageContent : u8_t
 {
-  CALENDAR = 0,
-  WEATHER = 1
+  CALENDAR = false,
+  WEATHER = true
 };
 
 void ShowLunar()
@@ -546,7 +546,7 @@ void ShowHitokoto()
   
   //Serial.printf("%s from: %s\n", Hitokoto.hitokoto, Hitokoto.from); 
   String headHitokoto = Hitokoto.hitokoto;
-  String tailHitokoto = " from: ";
+  String tailHitokoto = " ---- ";
   tailHitokoto.concat(Hitokoto.from);
   headHitokoto.concat(tailHitokoto);
   Serial.println(headHitokoto);
@@ -573,7 +573,10 @@ void ShowTodoist()
       return;
     }
     u8g2Fonts.setFont(u8g2_mfyuehei_14_gb2312);
-    u8g2Fonts.drawUTF8(80, 540, "**待办事项**");
+    String toDoInCenter = "**待办事项**";
+    int16_t toDoWidth = u8g2Fonts.getUTF8Width(toDoInCenter.c_str());
+    u8g2Fonts.drawUTF8((DISPLAY_WIDTH - toDoWidth) / 2, 540, toDoInCenter.c_str());
+    //u8g2Fonts.drawUTF8(80, 540, "**待办事项**");
     int sizeY = 570;
     for (JsonObject item : doc.as<JsonArray>()) 
     {
@@ -777,15 +780,15 @@ void setup()
 
   qwAPI.Config(QWEATHER_API_KEY);
 
-/* 
-  IPAPIResponse ipAPIResponse = GetIPInfomation(); //IPAPI
-  if(ipAPIResponse.status != "success"){
-    Serial.printf("Get ip information failed:%s\n Restarting......\n",ipAPIResponse.message);
-    esp_restart();
-  }
-  Serial.printf("IP: %s\n", ipAPIResponse.query.c_str());
-  Serial.printf("City: %s\n", ipAPIResponse.city.c_str());
-*/
+
+  // IPAPIResponse ipAPIResponse = GetIPInfomation(); //IPAPI
+  // if(ipAPIResponse.status != "success"){
+  //   Serial.printf("Get ip information failed:%s\n Restarting......\n",ipAPIResponse.message);
+  //   esp_restart();
+  // }
+  // Serial.printf("IP: %s\n", ipAPIResponse.query.c_str());
+  // Serial.printf("City: %s\n", ipAPIResponse.city.c_str());
+
 
   MyIP myIP(Language::CHINESE); //MyIP
   Serial.printf("IP: %s\n", myIP.IP.c_str());
