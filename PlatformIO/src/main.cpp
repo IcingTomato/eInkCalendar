@@ -77,7 +77,7 @@ RTC_NOINIT_ATTR u8_t LASTPAGE = -1;
 
 #define uS_TO_S_FACTOR 1000000 /* Conversion factor for micro seconds to seconds */
 //#define TIME_TO_SLEEP 60 * 60 * 3  /* 改变这里的值来调整你需要的休眠时间，这里最终的值为秒。 例如 60*60*3 最终会休眠3个小时 */ 
-#define TIME_TO_SLEEP 60 * 10
+#define TIME_TO_SLEEP 60 * 60 
 
 //一言
 typedef struct {
@@ -575,9 +575,9 @@ void ShowTodoist()
     u8g2Fonts.setFont(u8g2_mfyuehei_14_gb2312);
     String toDoInCenter = "**待办事项**";
     int16_t toDoWidth = u8g2Fonts.getUTF8Width(toDoInCenter.c_str());
-    u8g2Fonts.drawUTF8((DISPLAY_WIDTH - toDoWidth) / 2, 540, toDoInCenter.c_str());
+    u8g2Fonts.drawUTF8((DISPLAY_WIDTH - toDoWidth) / 2, 580, toDoInCenter.c_str());
     //u8g2Fonts.drawUTF8(80, 540, "**待办事项**");
-    int sizeY = 570;
+    int sizeY = 620;
     for (JsonObject item : doc.as<JsonArray>()) 
     {
       const char* content = item["content"]; 
