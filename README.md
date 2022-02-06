@@ -1,5 +1,7 @@
 # eInkCalendar 万能墨水屏日历
 
+![](http://i0.hdslb.com/bfs/archive/58ff5acbbbddf92584b0a6159ff89ff6c0b6cd0f.jpg)
+
 ![](./docs/images/0.jpg)
 
 [English](./README_en.md)
