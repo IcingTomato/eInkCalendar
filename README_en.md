@@ -70,6 +70,8 @@ According to the [E-Paper ESP32 Driver Board schemetic](https://www.waveshare.ne
 ```cpp
 const String QWEATHER_API_KEY = "********************";
 const String TODOIST_ACCESS_TOKEN = "************************";
+const String MUXIAOGUO_API_KEY = "************************";
+const String TIANXING_API_KEY = "************************";
 ```
 
 ### All Done

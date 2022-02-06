@@ -41,7 +41,9 @@ U8G2_FOR_ADAFRUIT_GFX u8g2Fonts;
 //#include "IPAPI.h"  //IPAPI 测不准
 #include "MyIP.h"
 
-int led = 2; //LED
+int led = 5; //LED
+
+String NowDate; //今天
 
 const char *WEEKDAY_CN[] = {"周日", "周一", "周二", "周三", "周四", "周五", "周六"};
 const char *WEEKDAY_EN[] = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
@@ -77,7 +79,7 @@ RTC_NOINIT_ATTR u8_t LASTPAGE = -1;
 
 #define uS_TO_S_FACTOR 1000000 /* Conversion factor for micro seconds to seconds */
 //#define TIME_TO_SLEEP 60 * 60 * 3  /* 改变这里的值来调整你需要的休眠时间，这里最终的值为秒。 例如 60*60*3 最终会休眠3个小时 */ 
-#define TIME_TO_SLEEP 60 * 60 
+#define TIME_TO_SLEEP 60 * 60
 
 //一言
 typedef struct {
@@ -436,8 +438,9 @@ enum PageContent : u8_t
 
 void ShowLunar()
 {
+  //游客QPS限制,请等待 180s 后重试,或注册申请KEY(免费)
   HTTPClient http;
-  http.begin("https://api.muxiaoguo.cn/api/yinlongli");//Specify the URL
+  http.begin("https://api.muxiaoguo.cn/api/yinlongli?api_key=" + MUXIAOGUO_API_KEY);//Specify the URL
   int httpCode = http.GET();            //Make the request
   if (httpCode > 0) 
   { //Check for the returning code
@@ -454,16 +457,22 @@ void ShowLunar()
       return;
     }
 
-    const char* code = doc["code"]; // "200"
+    int code = doc["code"]; // "200"
     const char* msg = doc["msg"]; // "success"
 
     JsonObject data = doc["data"];
-    const char* data_lunar = data["lunar"]; // "辛丑年腊月二十"
-    const char* data_solar_terms = data["solar_terms"]; // "大寒后"
+    const char* data_lunarYearName = data["lunarYearName"]; // "壬寅年"
+    const char* data_lunar = data["lunar"]; // "腊月二十"
+    const char* data_solar_terms = data["solarTerms"]; // "大寒"
+    const char* data_festival_0 = data["festival"][0]; // "世界湿地日"
+    const char* data_gregorian = data["gregorian"]; // "2022-02-06 20:18:28"
+    NowDate = data_gregorian;
     u8g2Fonts.setFont(u8g2_mfyuehei_12_gb2312);
+    String LunarYearName = data_lunarYearName;
     String LunarDate = data_lunar;
+    LunarYearName.concat(LunarDate);
     String SolarTerms = data_solar_terms;
-    String lunarDate = LunarDate + " " + SolarTerms;
+    String lunarDate = LunarYearName + " " + SolarTerms;
     int16_t lunarDateWidth = u8g2Fonts.getUTF8Width(lunarDate.c_str());
     u8g2Fonts.drawUTF8((DISPLAY_WIDTH - lunarDateWidth - 80), 64 + 24, lunarDate.c_str());
   }
@@ -515,6 +524,60 @@ void ShowCurrentDate()
 //   DrawMultiLineString(string(soul), 80, 420, 300, 36);
 // }
 
+void ShowHuangli()
+{
+  HTTPClient http;
+  Serial.println(NowDate.substring(1,11));
+  http.begin("http://api.tianapi.com/lunar/index?key=" + TIANXING_API_KEY + "&date=" + NowDate.substring(0,11));//Specify the URL
+  int httpCode = http.GET();            //Make the request
+  if (httpCode > 0) { //Check for the returning code
+    String input = http.getString();
+    //Serial.println(httpCode);
+    Serial.println(input);
+    // String input;
+    DynamicJsonDocument doc(2048);
+    DeserializationError error = deserializeJson(doc, input);
+    
+    if (error) {
+      Serial.print("deserializeJson() failed: ");
+      Serial.println(error.c_str());
+      return;
+    }
+
+    JsonObject newslist_0 = doc["newslist"][0];
+
+    u8g2Fonts.setFont(u8g2_mfyuehei_18_gb2312);
+    String FitnessCenter = "**宜**";
+    int16_t FitnessCenterWidth = u8g2Fonts.getUTF8Width(FitnessCenter.c_str());
+    u8g2Fonts.drawUTF8((DISPLAY_WIDTH - FitnessCenterWidth) / 2, 430, FitnessCenter.c_str());
+    const char* newslist_0_fitness = newslist_0["fitness"]; // "出行.上任.会友.上书.见工"
+    String Fitness = newslist_0_fitness;
+    int16_t FitnessWidth = u8g2Fonts.getUTF8Width(Fitness.c_str());
+    u8g2Fonts.drawUTF8((DISPLAY_WIDTH - FitnessWidth) / 2, 470, Fitness.c_str());
+    String TabooCenter = "**忌**";
+    int16_t TabooCenterWidth = u8g2Fonts.getUTF8Width(TabooCenter.c_str());
+    u8g2Fonts.drawUTF8((DISPLAY_WIDTH - TabooCenterWidth) / 2, 510, TabooCenter.c_str());
+    const char* newslist_0_taboo = newslist_0["taboo"]; // "动土.开仓.嫁娶.纳采"
+    String Taboo = newslist_0_taboo;
+    int16_t TabooWidth = u8g2Fonts.getUTF8Width(Taboo.c_str());
+    u8g2Fonts.drawUTF8((DISPLAY_WIDTH - TabooWidth) / 2, 550, Taboo.c_str());
+    String ChongshaCenter = "**冲煞**";
+    int16_t ChongshaCenterWidth = u8g2Fonts.getUTF8Width(ChongshaCenter.c_str());
+    u8g2Fonts.drawUTF8((DISPLAY_WIDTH - ChongshaCenterWidth) / 2, 590, ChongshaCenter.c_str());
+    const char* newslist_0_chongsha = newslist_0["chongsha"]; // "虎日冲(甲申)猴"
+    String Chongsha = newslist_0_chongsha;
+    int16_t ChongshaWidth = u8g2Fonts.getUTF8Width(Chongsha.c_str());
+    u8g2Fonts.drawUTF8((DISPLAY_WIDTH - ChongshaWidth) / 2, 630, Chongsha.c_str());
+    String SuishaCenter = "**岁煞**";
+    int16_t SuishaCenterWidth = u8g2Fonts.getUTF8Width(SuishaCenter.c_str());
+    u8g2Fonts.drawUTF8((DISPLAY_WIDTH - SuishaCenterWidth) / 2, 670, SuishaCenter.c_str());
+    const char* newslist_0_suisha = newslist_0["suisha"]; // "岁煞北"
+    String Suisha = newslist_0_suisha;
+    int16_t SuishaWidth = u8g2Fonts.getUTF8Width(Suisha.c_str());
+    u8g2Fonts.drawUTF8((DISPLAY_WIDTH - SuishaWidth) / 2, 710, Suisha.c_str());
+  }
+}
+
 void ShowHitokoto()
 {
   HTTPClient http;
@@ -546,7 +609,7 @@ void ShowHitokoto()
   
   //Serial.printf("%s from: %s\n", Hitokoto.hitokoto, Hitokoto.from); 
   String headHitokoto = Hitokoto.hitokoto;
-  String tailHitokoto = " ---- ";
+  String tailHitokoto = " 出自： ";
   tailHitokoto.concat(Hitokoto.from);
   headHitokoto.concat(tailHitokoto);
   Serial.println(headHitokoto);
@@ -710,8 +773,9 @@ void ShowPage(PageContent pageContent)
       break;
     }
 
-    ShowHitokoto();
-    ShowTodoist();
+    //ShowHitokoto();
+    //ShowTodoist();
+    ShowHuangli();
     ShowWeatherFoot();
 
   } while (display.nextPage());
@@ -742,7 +806,7 @@ void setup()
   Serial.println("setup");
 
   pinMode(led, OUTPUT);
-  digitalWrite(led, HIGH);   //开灯
+  digitalWrite(led, LOW);   //开灯
 
   //Print the wakeup reason for ESP32
   print_wakeup_reason();
@@ -811,7 +875,7 @@ void setup()
   Serial.println("睡吧。。。睡吧。。。zzzzzZZZZZZZ~~ ~~ ~~");
   Serial.flush();
 
-  digitalWrite(led, LOW);  //关灯
+  digitalWrite(led, HIGH);  //关灯
 
   /**
    * @brief 关掉蓝牙和WiFi,进入Deep sleep模式

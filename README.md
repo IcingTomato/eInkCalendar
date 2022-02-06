@@ -1,4 +1,4 @@
-# eInkCalendarWithHitokoto 一言墨水屏待办日历
+# eInkCalendar 万能墨水屏日历
 
 ![](./docs/images/0.jpg)
 
@@ -67,12 +67,15 @@
     ![](./docs/images/access_token.png)
 
     - [农历-木小果API](https://api.muxiaoguo.cn/doc/yinlongli.html)
+    - [黄历-天行数据API](https://www.tianapi.com/apiview/45)
     - [IP地址查询](https://www.myip.la/)：用来通过当前设备的IP地址查询得知当前位置。具体可见 [src/MyIP.h](src/MyIP.h) 和 [src/MyIP.cpp](src/MyIP.cpp)
     - 字体：项目中的字体使用了[造字工房](https://www.makefont.com/)的部分非商用字体来生成。如您要使用，请确保在其[授权范围](https://www.makefont.com/authorization.html)内使用。
     - 天气服务：这里用了[和风天气开发平台](https://dev.qweather.com/)的服务。所以需要您前往注册账号并获取到自己的一个应用程序Key来替换[src/config.h](src/config.h)中的占位符。具体相关代码可以参见 [src/QWeather.h](src/QWeather.h) 和 [src/QWeather.cpp](src/QWeather.cpp)
 ```cpp
 const String QWEATHER_API_KEY = "********************";
 const String TODOIST_ACCESS_TOKEN = "************************";
+const String MUXIAOGUO_API_KEY = "************************";
+const String TIANXING_API_KEY = "************************";
 ```
 
 ### 总装
@@ -118,3 +121,4 @@ const String TODOIST_ACCESS_TOKEN = "************************";
 | 2022.01.20 | 增加一言API |
 | 2022.01.21 | 增加Todoist API |
 | 2022.01.22 | 增加农历 |
+| 2022.02.06 | 增加黄历 |
